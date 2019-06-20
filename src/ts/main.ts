@@ -34,6 +34,8 @@ const sketch = (p: p5) => {
 
   p.draw = () => {
 
+	if( !data.animate ) return;
+
     /*--------DO SOMETHING HERE----------*/
 
     // console.log(frame);
@@ -67,10 +69,12 @@ const sketch = (p: p5) => {
 	const gui = new dat.GUI();
 
 	const data = {
+		animate: true,
 		reset: reset,
 		screenshot: download
 	}
 
+	gui.add( data, 'animate' );
 	gui.add( data, 'screenshot');
 	gui.add( data, 'reset');
 
