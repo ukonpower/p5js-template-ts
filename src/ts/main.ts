@@ -32,7 +32,8 @@ const sketch = (p: p5) => {
 
     //craete canvas
     renderer = p.createCanvas( sizeX, sizeY );
-
+    ( renderer.elt as HTMLCanvasElement ).removeAttribute( 'style' );
+    
   };
 
   p.windowResized = () => {
