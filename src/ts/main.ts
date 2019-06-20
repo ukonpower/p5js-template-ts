@@ -12,16 +12,6 @@ const sketch = (p: p5) => {
   const sizeX = 2000;
   const sizeY = 2000;
 
-  const data = {
-    x : -50,
-    y : 50
-  }
-
-  const gui = new dat.GUI();
-
-  gui.add( data, 'x');
-  gui.add( data, 'y');
-
   let renderer: p5.Renderer;
 
   p.preload = () => {
@@ -59,6 +49,33 @@ const sketch = (p: p5) => {
     frame++;
 
   }
+
+  let reset = () => {
+
+		frame = 0;
+
+	}
+
+	let download = () => {
+		
+		downloader.downloadCanvas( renderer.elt, frame.toString() );
+
+  }
+
+  /*--------dat.GUI----------*/
+
+	const gui = new dat.GUI();
+
+	const data = {
+		reset: reset,
+		screenshot: download
+	}
+
+	gui.add( data, 'screenshot');
+	gui.add( data, 'reset');
+
+	/*-------------------------*/
+  
 }
 
 //--------------------------------------------------------------------
