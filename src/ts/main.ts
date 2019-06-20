@@ -1,7 +1,7 @@
 import * as p5 from 'p5';
 
 //キャプチャするかどうか
-const capture = false;
+let capture = false;
 
 //フレーム長
 const frameLength = 100;
@@ -35,13 +35,6 @@ const sketch = (p: p5) => {
 
     if( frame > frameLength ){
 
-      if( capture ){
-
-        cap.stop();
-        cap.save();
-      
-      }
-
       isAnimate = false;
 
       return;
@@ -54,7 +47,14 @@ const sketch = (p: p5) => {
 
     /* --------------------------------- */
 
-    if( capture ) cap.capture( renderer.elt );
+    if( capture ){
+
+			let b = canvasToBlob( renderer.elt );
+
+			downloadBlob( b, frame.toString() );
+
+		}
+
     frame++;
 
   }
@@ -66,19 +66,51 @@ const sketch = (p: p5) => {
 let isAnimate = true;
 let frame = 0;
 
-//CCapture
-declare var CCapture: any;
-const cap = new CCapture( { format: 'png' } );
-
-if( capture ){
-  
-  cap.start();
-
-}
-
 //始まるよ
 window.addEventListener('load', () => {
 
-  const sketchP5 = new p5( sketch );
+	const sketchP5 = new p5( sketch );
 
 });
+
+let canvasToBlob = ( canvas: HTMLCanvasElement ): Blob => {
+	
+	let base64 = canvas.toDataURL('image/png');
+	let bin = atob(base64.replace(/^.*,/, ''));
+	let buffer = new Uint8Array(bin.length);
+	
+	for (let i = 0; i < bin.length; i++) {
+	
+		buffer[i] = bin.charCodeAt(i);
+	
+	}
+	
+	try {
+	
+		const blob = new Blob([buffer.buffer], {
+			type: 'image/png'
+		});
+
+		return blob
+	
+	} catch (e) {
+	
+		return null;
+	
+	}
+
+}
+
+let downloadBlob = ( blob: Blob, filename: string ) => {  
+	
+	var event = document.createEvent("MouseEvents");
+  event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	
+	var a = document.createElement( "a" ) as HTMLAnchorElement;
+	a.href = window.URL.createObjectURL(blob);
+
+	a.download = filename;
+	
+	a.dispatchEvent(event);
+
+}
